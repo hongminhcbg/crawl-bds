@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-const initFile = "A,B,C \n"
+const initFile = "\"Ngày\",\"Danh mục\",\"Nội dung\" \n"
 
 func StoreToCSV(queue chan string, filename string) {
 

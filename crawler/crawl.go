@@ -1,9 +1,10 @@
-package crawl
+package crawler
 
 import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 type crawImpl struct {
@@ -38,7 +39,10 @@ func (c *crawImpl) getPageData(pageIndex int) (string, error) {
 	request.Header.Set("cookie", c.Cookie)
 	request.Header.Set("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
 
-	resp, err := http.DefaultClient.Do(request)
+	httpClient := http.Client{
+		Timeout: 80 * time.Second,
+	}
+	resp, err := httpClient.Do(request)
 	if err != nil {
 		return "", err
 	}
