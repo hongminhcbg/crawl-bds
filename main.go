@@ -2,25 +2,54 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"time"
 
+	"crawl/clean"
+	"crawl/crawler"
 	"crawl/store"
 )
 
-const cookie = "__cfduid=d47121bbf4a11649bb87c1c2897ebe3e11612182600; __sbmask=acqglygatyyalzijgctv@usqxgkanhrmoasbblkauw@4oXYd/I+Tcg67DWfaP8bWMWRbttC0LBlg++Lbg%3D%3D; wordpress_test_cookie=WP+Cookie+check; wordpress_logged_in_3748aa90f9091fbd66dfda219c76b982=mr.nvlam%40gmail.com%7C1612455365%7CocjNTXiQPUhxmftozhDkbtmfSaMcQKffb6OkDDgdERK%7C7b66b2a7605bb4073fe6b6216cb82368f167b44bb851b7f5d5772111ea3c68fe; __atuvc=28%7C5; __atuvs=60198364c0e89a3a000"
+const cookie = "__cfduid=d47121bbf4a11649bb87c1c2897ebe3e11612182600; __sbmask=acqglygatyyalzijgctv@usqxgkanhrmoasbblkauw@4oXYd/I+Tcg67DWfaP8bWMWRbttC0LBlg++Lbg%3D%3D; redux_update_check=3.6.18; wordpress_logged_in_3748aa90f9091fbd66dfda219c76b982=mr.nvlam%40gmail.com%7C1612540418%7CDbkstd8guNkfTJm7JMf2phXXNnjMcVKiOWG9QPhsXxS%7C370b577e747843797de3f46a672194e87335bd101203caa120b1333b18f1bff3; __atuvc=32%7C5; __atuvs=601ac6c313ff0a7c002"
 const requestURL = "https://batdongsanchinhchu.vn/bds"
+const htmlInputPath = "./temp.html"
+const maxPage = 800000
 
 func main() {
-	fmt.Println("hello world")
 
-	queue := make(chan string, 5000)
-	for i := 1; i < 10; i++ {
-		queue <- fmt.Sprintf("%d,%d,%d\n", i, i+1, i+2)
-	}
+	queueRawData := make(chan string, 5000)
+	queueSaveCSV := make(chan string, 5000)
+	pages := make(chan int, 5000)
+
+	currentPage := 1
+	go func(chan int) {
+		for currentPage < maxPage {
+			select {
+			case pages <- currentPage:
+				fmt.Printf("[INFOR] start get page[%d]\n", currentPage)
+				currentPage++
+			default:
+				time.Sleep(1 * time.Second)
+			}
+		}
+	}(pages)
 
 	filename := fmt.Sprintf("./results/%d_result.csv", time.Now().Unix())
-	go store.StoreToCSV(queue, filename)
+	crawler := crawler.NewCrawler(requestURL, cookie)
 
-	time.Sleep(30 * time.Second)
-	close(queue)
+	go crawler.Start(pages, queueRawData)
+	go store.StoreToCSV(queueSaveCSV, filename)
+	go clean.Consume(queueRawData, queueSaveCSV)
+
+	bytes, err := ioutil.ReadFile(htmlInputPath)
+	if err != nil {
+		panic(err)
+	}
+
+	queueRawData <- string(bytes)
+
+	time.Sleep(35 * time.Hour)
+	close(queueSaveCSV)
+	close(queueRawData)
+	close(pages)
 }
