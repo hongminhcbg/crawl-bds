@@ -17,22 +17,52 @@ func clean(rawPageContent string, result chan string) error {
 		return err
 	}
 
-	var data string
+	var date string
+	var catalog string
+	var address string
+	var phone string
+	var content string
+	var district string
+	var price string
 
 	doc.Find(".item-bds").Each(func(i int, s *goquery.Selection) {
-		oneRow := ""
-		// get date
-		date := s.Find(".text-center").Text()
-		oneRow += fmt.Sprintf(`"%s",`, date[:10])
+		date = ""
+		catalog = ""
+		address = ""
+		phone = ""
+		content = ""
+		price = ""
+
+		date = s.Find(".text-center").Text()[:10]
 
 		//infor type
-		typeInfor := s.Find(".has-bg").Find("span").Text()
-		oneRow += fmt.Sprintf(`"%s",`, standardizeSpaces(typeInfor))
+		catalog = s.Find(".has-bg").Find("span").Text()
+
+		s.Find(".item-bds-info").Find(".bds-item-content").Find(".sub-table").Find("td").Each(func(i int, s *goquery.Selection) {
+			if i == 1 {
+				address = s.Text()
+				return
+			}
+
+			if i == 3 {
+				phone = s.Text()
+				return
+			}
+		})
+
+		s.Find(".item-bds-more").Find("b").Each(func(i int, s *goquery.Selection) {
+			if i == 0 {
+				district = s.Text()
+				return
+			}
+
+			price = s.Text()
+		})
 
 		// get data
-		data = s.Find(".bds-item-content-high").Text() + "\n" + s.Find(".item-bds-more").Text()
-		oneRow += fmt.Sprintf(`"%s"`, standardizeSpaces(data))
-		oneRow += "\n"
+		content = s.Find(".item-bds-title").Find("a").Text() + s.Find(".bds-item-content-high").Find("p").Text()
+		content = standardizeSpaces(content)
+		oneRow := fmt.Sprintf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\" \n", date, catalog, address, district, phone, price, content)
 
 		fmt.Println("[DEBUG] ", oneRow)
 
