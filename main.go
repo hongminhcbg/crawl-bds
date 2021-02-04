@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"time"
 
 	"crawl/clean"
@@ -12,7 +11,6 @@ import (
 
 const cookie = "__cfduid=d47121bbf4a11649bb87c1c2897ebe3e11612182600; __sbmask=acqglygatyyalzijgctv@usqxgkanhrmoasbblkauw@4oXYd/I+Tcg67DWfaP8bWMWRbttC0LBlg++Lbg%3D%3D; redux_update_check=3.6.18; wordpress_logged_in_3748aa90f9091fbd66dfda219c76b982=mr.nvlam%40gmail.com%7C1612540418%7CDbkstd8guNkfTJm7JMf2phXXNnjMcVKiOWG9QPhsXxS%7C370b577e747843797de3f46a672194e87335bd101203caa120b1333b18f1bff3; __atuvc=32%7C5; __atuvs=601ac6c313ff0a7c002"
 const requestURL = "https://batdongsanchinhchu.vn/bds"
-const htmlInputPath = "./temp.html"
 const maxPage = 800000
 
 func main() {
@@ -40,13 +38,6 @@ func main() {
 	go crawler.Start(pages, queueRawData)
 	go store.StoreToCSV(queueSaveCSV, filename)
 	go clean.Consume(queueRawData, queueSaveCSV)
-
-	bytes, err := ioutil.ReadFile(htmlInputPath)
-	if err != nil {
-		panic(err)
-	}
-
-	queueRawData <- string(bytes)
 
 	time.Sleep(35 * time.Hour)
 	close(queueSaveCSV)
