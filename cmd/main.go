@@ -9,7 +9,7 @@ import (
 	"crawl/store"
 )
 
-const cookie = "__cfduid=d47121bbf4a11649bb87c1c2897ebe3e11612182600; __atuvc=40%7C5; __atuvs=601df3cb6eff7a53002; __sbmask=acqglygatyyalzijgctv@usqxgkanhrmoasbblkauw@4oXYd/I+Tcg67DWfaP8bWMWRbttC0LBlg++Lbg%3D%3D; redux_update_check=3.6.18; wordpress_logged_in_3748aa90f9091fbd66dfda219c76b982=mr.nvlam%40gmail.com%7C1612748505%7CIMgDRTDP1xfNayW7QiLUaaam4r9s1AuP2gSikHNeB0j%7C88e86a8de5db6244f39cdedf0a9482a6b90d40b6ac4b7bd6492b40f45cde34e1"
+const cookie = "__cfduid=d23ca80214b2bfdfca69e3882e171fc7b1616416043; __atssc=messenger%3B1; redux_update_check=3.6.18; wordpress_logged_in_3748aa90f9091fbd66dfda219c76b982=cherryupvietnam%40gmail.com%7C1616588970%7CjA4AzOKdrxVN4gWDq9p2ivE8VRL2cZMhxSV1npBr7sS%7Cd7457184cac3e187b670937c792ac6c4f501c0c3183630b0c6854bb8eeb085c3; __atuvc=8%7C12; __atuvs=60588d3b3888ed7f007"
 
 const requestURL = "https://batdongsanchinhchu.vn/bds"
 const maxPage = 60000
