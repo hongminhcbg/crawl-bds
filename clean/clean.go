@@ -70,15 +70,16 @@ func clean(rawPageContent string, result chan string, StartDate string, endDate 
 		price = ""
 
 		date = s.Find(".text-center").Text()[:10]
-		fmt.Println("[DB][Compare date] ======>", date, StartDate)
 		compareStartDateWithDate := compareDate(StartDate, endDate, date)
-		if compareStartDateWithDate == 1 {
+		fmt.Println("[DB][Compare date] ======>", StartDate, date, endDate, compareStartDateWithDate)
+
+		if compareStartDateWithDate == -1 {
 			fmt.Println(" ============> download success <============ ")
 			time.Sleep(20 * time.Second)
 			os.Exit(2)
 		}
 
-		if compareStartDateWithDate == -1 {
+		if compareStartDateWithDate == 1 {
 			return
 		}
 

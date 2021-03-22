@@ -35,9 +35,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	queueRawData := make(chan string, 5000)
-	queueSaveCSV := make(chan string, 5000)
-	pages := make(chan int, 5000)
+
+	fmt.Printf("[INFOR] start with config %+v\n", config)
+	queueRawData := make(chan string, 50)
+	queueSaveCSV := make(chan string, 50)
+	pages := make(chan int, 50)
 	currentPage := startPage
 	go func(chan int) {
 		for currentPage < maxPage {
