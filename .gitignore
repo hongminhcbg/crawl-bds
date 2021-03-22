@@ -1,0 +1,4 @@
+cmd/config.json
+results/
+*.html
+.vscode/
