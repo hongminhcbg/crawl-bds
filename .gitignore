@@ -2,3 +2,4 @@ config.json
 results/
 *.html
 .vscode/
+main

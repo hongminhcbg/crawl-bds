@@ -1,5 +1,5 @@
 module crawl
 
-go 1.14
+go 1.16
 
-require github.com/PuerkitoBio/goquery v1.6.1
+require github.com/PuerkitoBio/goquery v1.6.1 // indirect

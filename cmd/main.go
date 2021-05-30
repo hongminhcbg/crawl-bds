@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"crawl/clean"
+	"crawl/clients"
 	"crawl/crawler"
 	"crawl/store"
 )
@@ -36,19 +37,20 @@ func main() {
 
 	filename := fmt.Sprintf("./results/%d_result.csv", time.Now().Unix())
 	crawler := crawler.NewCrawler(requestURL, cookie)
+	utilsClient := clients.NewUtilsClient(requestURL, cookie)
 
 	go crawler.Start(pages, queueRawData)
 	go crawler.Start(pages, queueRawData)
 	go crawler.Start(pages, queueRawData)
 
 	go store.StoreToCSV(queueSaveCSV, filename)
-	go clean.Consume(queueRawData, queueSaveCSV)
+	go clean.Consume(queueRawData, queueSaveCSV, utilsClient)
 
 	defer close(queueSaveCSV)
 	defer close(queueRawData)
 	defer close(pages)
 
 	for {
-		time.Sleep(1 * time.Hour)
+		time.Sleep(100 * time.Hour)
 	}
 }
