@@ -3,6 +3,7 @@ package clean
 import (
 	"fmt"
 	"strings"
+	"regexp"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -12,62 +13,69 @@ func standardizeSpaces(s string) string {
 }
 
 func clean(rawPageContent string, result chan string) error {
+	var validID = regexp.MustCompile(`^[0-9]{2}/[0-9]{2}/[0-9]{4}$`)
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(rawPageContent))
 	if err != nil {
 		return err
 	}
 
-	var date string
-	var catalog string
-	var address string
-	var phone string
-	var content string
-	var district string
-	var price string
+	// var date string
+	// var catalog string
+	// var address string
+	// var phone string
+	// var content string
+	// var district string
+	// var price string
 
-	doc.Find(".item-bds").Each(func(i int, s *goquery.Selection) {
-		date = ""
-		catalog = ""
-		address = ""
-		phone = ""
-		content = ""
-		price = ""
+	doc.Find("tbody tr").Each(func(i int, s *goquery.Selection) {
+		date := "";
+		title := ""
+		address := ""
+		phone := ""
+		price := ""
+		square := ""
+		detail := ""
+		s.Find("td").Each(func(itd int, s *goquery.Selection) {
 
-		date = s.Find(".text-center").Text()[:10]
+			s.Find("span").Each(func(i int, s *goquery.Selection) {
+				rawText := strings.TrimSpace(s.Text())
+				//fmt.Printf("[BD][itd = %d][ispan = %d] %s\n", itd, i, rawText)
 
-		//infor type
-		catalog = s.Find(".has-bg").Find("span").Text()
+				switch i {
+				case 0:
+					if itd == 1 {
+						title = rawText
+					} else {
+						address = rawText
+					}
+				case 1:
+					phone = rawText
+				case 3:
+					price = rawText
+				case 4:
+					square = rawText
+				}
+			})
 
-		s.Find(".item-bds-info").Find(".bds-item-content").Find(".sub-table").Find("td").Each(func(i int, s *goquery.Selection) {
-			if i == 1 {
-				address = s.Text()
-				return
-			}
+			s.Find("p").Each(func(i int, s *goquery.Selection) {
+				rawStr := s.Text()
+				rawStr = strings.TrimSpace(rawStr)
+				//fmt.Printf("rawstr = '%s'\n", rawStr)
 
-			if i == 3 {
-				phone = s.Text()
-				return
-			}
+				if validID.MatchString(rawStr) {
+					date = rawStr;
+				}
+			})
+	
 		})
 
-		s.Find(".item-bds-more").Find("b").Each(func(i int, s *goquery.Selection) {
-			if i == 0 {
-				district = s.Text()
-				return
-			}
-
-			price = s.Text()
-		})
-
-		// get data
-		content = s.Find(".item-bds-title").Find("a").Text() + s.Find(".bds-item-content-high").Find("p").Text()
-		content = standardizeSpaces(content)
-		oneRow := fmt.Sprintf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\" \n", date, catalog, address, district, phone, price, content)
-
-		fmt.Println("[DEBUG] ", oneRow)
-
-		result <- oneRow
+		fmt.Println("[DB] date = ", date)
+		fmt.Println("[DB] title = ", title)
+		fmt.Println("[DB] phone = ", phone)
+		fmt.Println("[DB] price = ", price)
+		fmt.Println("[DB] square = ", square)
 	})
+
 
 	return nil
 }

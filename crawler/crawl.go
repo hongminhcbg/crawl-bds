@@ -28,7 +28,7 @@ func (c *crawImpl) getPageData(pageIndex int) (string, error) {
 	if pageIndex <= 1 {
 		getPageURL = c.URL
 	} else {
-		getPageURL = c.URL + fmt.Sprintf("/page/%d", pageIndex)
+		getPageURL = c.URL + fmt.Sprintf("?page=%d", pageIndex)
 	}
 
 	request, err := http.NewRequest(http.MethodGet, getPageURL, nil)
@@ -57,7 +57,8 @@ func (c *crawImpl) getPageData(pageIndex int) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
+    
+	//fmt.Println("[DB] raw data resp =", string(bytes))
 	return string(bytes), nil
 }
 

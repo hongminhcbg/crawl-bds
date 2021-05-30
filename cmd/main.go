@@ -9,11 +9,11 @@ import (
 	"crawl/store"
 )
 
-const cookie = "__cfduid=d23ca80214b2bfdfca69e3882e171fc7b1616416043; __atssc=messenger%3B1; redux_update_check=3.6.18; wordpress_logged_in_3748aa90f9091fbd66dfda219c76b982=cherryupvietnam%40gmail.com%7C1616588970%7CjA4AzOKdrxVN4gWDq9p2ivE8VRL2cZMhxSV1npBr7sS%7Cd7457184cac3e187b670937c792ac6c4f501c0c3183630b0c6854bb8eeb085c3; __atuvc=8%7C12; __atuvs=60588d3b3888ed7f007"
 
-const requestURL = "https://batdongsanchinhchu.vn/bds"
+const cookie = "bat_dong_san_chinh_chu_session=eyJpdiI6IktZOVlQTU5VTUR3a2U4aWdBaEZTXC9RPT0iLCJ2YWx1ZSI6IkZLQm5zMndacTlxckp2XC95RzVPc3IxR3o1WnJTZHNGcTlxRVl1YUhjUFVqXC80MklmMzJUU2dsWFlubDNVS1hzSSIsIm1hYyI6IjgyMmM2MGUyM2QyYzdiOWZkNGUwNjk2ODgzZDQxMjI4ZGVjOTI3ZGI0ZTVjOWIyNWYwMDdlOTE4NmRlN2Y3ZDkifQ%3D%3D; expires=Sun, 30-May-2022 02:46:21 GMT; Max-Age=7200; path=/; httponly"
+const requestURL = "https://batdongsanchinhchu.vn/product"
 const maxPage = 60000
-const startPage = 2100
+const startPage = 1
 
 func main() {
 
